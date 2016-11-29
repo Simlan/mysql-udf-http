@@ -48,6 +48,17 @@ result_cb(void *ptr, size_t size, size_t nmemb, void *data)
   return realsize;
 }
 
+/* ------------------------------------- */
+char* join(char *s1, char *s2)
+{
+    char *result = malloc(strlen(s1)+strlen(s2)+1);
+    if (result == NULL) return "string error";
+
+    strcpy(result, s1);
+    strcat(result, s2);
+    return result;
+ }
+
 /* ------------------------HTTP GET----------------------------- */
 
 my_bool http_get_init(UDF_INIT *initid, UDF_ARGS *args, char *message)
@@ -96,7 +107,8 @@ char *http_get(UDF_INIT *initid, UDF_ARGS *args,
     curl_easy_setopt(curl, CURLOPT_USERAGENT, "mysql-udf-http/1.0");
     retref= curl_easy_perform(curl);
     if (retref) {
-      fprintf(stderr, "error\n");
+      /* fprintf(stderr, "error:http_get\n"); */
+      fprintf(stderr, "error:http_get %s\n", args->args[0]);
       if (res->result) 
         strcpy(res->result,"");
       res->size = 0;
@@ -171,7 +183,7 @@ char *http_post(UDF_INIT *initid, UDF_ARGS *args,
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, args->args[1]);
     retref= curl_easy_perform(curl);
     if (retref) {
-      fprintf(stderr, "error\n");
+      fprintf(stderr, "error:http_post %s\n", args->args[0]);
       if (res->result)
         strcpy(res->result,"");
       res->size = 0;
@@ -247,7 +259,8 @@ char *http_put(UDF_INIT *initid, UDF_ARGS *args,
     curl_easy_setopt(curl, CURLOPT_POSTFIELDS, args->args[1]);
     retref= curl_easy_perform(curl);
     if (retref) {
-      fprintf(stderr, "error\n");
+      /* fprintf(stderr, "error:http_put\n"); */
+      fprintf(stderr, "error:http_put %s\n", args->args[0]);
       if (res->result)
         strcpy(res->result,"");
       res->size = 0;
@@ -318,7 +331,8 @@ char *http_delete(UDF_INIT *initid, UDF_ARGS *args,
     curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
     retref= curl_easy_perform(curl);
     if (retref) {
-      fprintf(stderr, "error\n");
+      /* fprintf(stderr, "error:http_delete\n"); */
+      fprintf(stderr, "error:http_delete %s\n", args->args[0]);
       if (res->result)
         strcpy(res->result,"");
       res->size = 0;
